@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+div{width:200px;height:200px;background:black;position:absolute;top:0;left:0;}
+</style>
+<script>
+window.onload=function()
+{
+  var oDiv=document.getElementById('div');
+  var disX=0;
+  var disY=0;
+  oDiv.onmousedown=function(ev) //鼠标按下DIV
+  {
+    var oEvent=ev||event;
+    disX=oEvent.clientX-oDiv.offsetLeft; //鼠标的X坐标减去DIV的左边距就等于disX, 这个disXs是用于确定鼠标移动DIV时鼠标点和DIV之间的左面距离，这个距离是不会变的，通过这个新鼠标的X坐标减去disX就是DIV的Left
+    disY=oEvent.clientY-oDiv.offsetTop; //鼠标的Y坐标减去DIV的左边距就等于disY, 这个disY是用于确定鼠标移动DIV时鼠标点和DIV之间的上面距离，这个距离是不会变的，通过这个新鼠标的Y坐标减去disY就是DIV的Top
+    document.onmousemove=function(ev) //为了防止鼠标移动太快而离开了DIV产生了bug，所以要给整个页面加onmousemove事件
+    {
+      var oEvent=ev||event;
+      var oLeft=oEvent.clientX-disX; //新鼠标X坐标减去disX,也就是鼠标移动DIV后的Left
+      var oTop=oEvent.clientY-disY; //新鼠标Y坐标减去disY,也就是鼠标移动DIV后的Top
+      if(oLeft<0) //当DIV的Left小于0，也就是移出左边
+      {
+        oLeft=0; //就把DIV的Left设置为0，就不能移出左边
+      }
+      else if(oLeft>document.documentElement.clientWidth-oDiv.offsetWidth) //屏幕宽度减去DIV的宽度就得出了DIV到达最右边的宽度，如果Left大于这个像素
+      {
+        oLeft=document.documentElement.clientWidth-oDiv.offsetWidth; //就把Left设置为这个像素
+      }
+      if(oTop<0) //当DIV的To小于0，也就是移出左边
+      {
+        oTop=0; //就把DIV的Top设置为0，就不能移出上边
+      }
+      else if(oTop>document.documentElement.clientHeight-oDiv.offsetHeight) //屏幕高度减去DIV的高度就得出了DIV到达最下面边的像素，如果Top大于这个像素
+      {
+        oTop=document.documentElement.clientHeight-oDiv.offsetHeight; //就把Top设置为这个像素
+      }
+      oDiv.style.left=oLeft+'px'; //DIV的Left设置为新鼠标X坐标减去disX的值
+      oDiv.style.top=oTop+'px'; //DIV的Top设置为新鼠标Y坐标减去disY的值
+    };
+    document.onmouseup=function() //鼠标松开时
+    {
+      document.onmousemove=null; //把鼠标移动清楚
+      document.onmouseup=null; //把鼠标松开清楚
+    };
+    return false; //阻止FireFox的默认事件 bug
+  };
+};
+</script>
+</head>
+<body>
+<div id="div"></div>
+</body>
+</html>
